@@ -1,0 +1,86 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+
+
+<dom-module id="my-lists">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      .add-fab {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        margin: 20px;
+        --paper-fab-background: var(--app-secondary-color);
+        --paper-fab-keyboard-focus-background: var(--app-secondary-color-hover);
+      }
+    </style>
+    <template is="dom-repeat" items="{{lists}}">
+      <div class="card">
+        <div class="circle">1</div>
+        <h1>[[item.name]]</h1>
+        <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
+        <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per
+          in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
+      </div>
+    </template>
+    <paper-fab icon="my-icons:add" class="add-fab" id="add" on-click="fabClick" title="Add Point"></paper-fab>
+
+  </template>
+
+  <script>
+    class MyLists extends Polymer.Element {
+      static get is() {
+        return 'my-lists';
+      }
+      static get properties() {
+        return {
+          route: {
+            type: Object
+          },
+          lists: {
+            type: Array,
+          }
+        }
+      }
+
+      connectedCallback() {
+        super.connectedCallback();
+        let self = this;
+        self.lists = [];
+        firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists')
+          .onSnapshot(function (recievedData) {
+            let recievedLists = [];
+            recievedData.docs.forEach(function (doc) {
+              recievedLists.push(doc.data());
+            });
+            self.set('lists', recievedLists);
+          });
+      }
+
+      fabClick() {
+        console.log("fab");
+        this.set('route.path', 'list-add/');
+      }
+    }
+
+    window.customElements.define(MyLists.is, MyLists);
+  </script>
+</dom-module>
