@@ -21,6 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="my-icons.html">
 
 <link rel="lazy-import" href="my-lists.html">
@@ -103,12 +104,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
             <div main-title>My App</div>
             <paper-icon-button icon="my-icons:menu" on-tap="authenticateUser"> signin </paper-icon-button>
-            [[user.displayName]] <img class="img-circle" src="[[user.photoURL]]">
+            [[user.displayName]] <img class="img-circle" src="[[user.photoURL]]" on-tap="signoutdialog.open()">
             <paper-icon-button icon="my-icons:menu" on-tap="signOutUser"> signout </paper-icon-button>
 
           </app-toolbar>
         </app-header>
-
+        <paper-dialog id="signoutdialog" no-overlap horizontal-align="left" vertical-align="top">
+          text here
+        </paper-dialog>
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <my-lists name="lists" route="{{route}}"></my-lists>
           <my-list-add name="list-add"></my-list-add>
@@ -123,6 +126,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>
+  <script src="../securityconfig.js"></script>
 
   <script>
     class MyApp extends Polymer.Element {
@@ -148,17 +152,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       ready() {
         super.ready();
-        var config = {
-          apiKey: "xxx",
-          authDomain: "xxx",
-          databaseURL: "xxx",
-          storageBucket: "xxx",
-          messagingSenderId: "xxx",
-          projectId: "xxx"
-        };
-        firebase.initializeApp(config);
+        if (firebase.apps.length === 0) {
+          firebase.initializeApp(config);
+        }
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+            this.user = user;
+          } else {
+            ///TODO: toast
+            console.log('User is signed out.')
+          }
+        });
       }
-
       static get observers() {
         return [
           '_routePageChanged(routeData.page)',
@@ -176,6 +181,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
+
       async authenticateUser() {
         let provider = new firebase.auth.GoogleAuthProvider();
         try {
@@ -186,9 +192,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.log(`signin error ${error} `)
         };
       }
+
       signOutUser() {
         firebase.auth().signOut()
       }
+
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
         var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');

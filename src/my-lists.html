@@ -12,6 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/titanium-letter-selectable-list-item/titanium-letter-selectable-list-item.html">
+
 
 
 <dom-module id="my-lists">
@@ -33,13 +35,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
     <template is="dom-repeat" items="{{lists}}">
-      <div class="card">
-        <div class="circle">1</div>
-        <h1>[[item.name]]</h1>
-        <p>Ut labores minimum atomorum pro. Laudem tibique ut has.</p>
-        <p>Lorem ipsum dolor sit amet, per in nusquam nominavi periculis, sit elit oportere ea.Lorem ipsum dolor sit amet, per
-          in nusquam nominavi periculis, sit elit oportere ea.Cu mei vide viris gloriatur, at populo eripuit sit.</p>
-      </div>
+      <titanium-letter-selectable-list-item heading="[[item.name]]">
+        <span slot="right">[[countItems(item.items)]] Items</span>
+      </titanium-letter-selectable-list-item>
     </template>
     <paper-fab icon="my-icons:add" class="add-fab" id="add" on-click="fabClick" title="Add Point"></paper-fab>
 
@@ -63,6 +61,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       connectedCallback() {
         super.connectedCallback();
+        firebase.auth().onAuthStateChanged(user => {
+          if (user) {
+            this.loadUsersLists();
+          }
+        });
+      }
+
+      loadUsersLists() {
         let self = this;
         self.lists = [];
         firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists')
@@ -79,7 +85,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         console.log("fab");
         this.set('route.path', 'list-add/');
       }
+
+      countItems(items) {
+        return typeof (items) == Array ? items.length : 0;
+      }
     }
+
+
 
     window.customElements.define(MyLists.is, MyLists);
   </script>
