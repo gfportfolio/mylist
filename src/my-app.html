@@ -103,10 +103,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
             <div main-title>My App</div>
-            <paper-icon-button icon="my-icons:menu" on-tap="authenticateUser"> signin </paper-icon-button>
-            [[user.displayName]] <img class="img-circle" src="[[user.photoURL]]" on-tap="signoutdialog.open()">
-            <paper-icon-button icon="my-icons:menu" on-tap="signOutUser"> signout </paper-icon-button>
-
+            <paper-icon-button icon="my-icons:person" on-tap="authenticateUser"> signin </paper-icon-button>
+            <img class="img-circle" src="[[user.photoURL]]" on-tap="signoutdialog.open()">
           </app-toolbar>
         </app-header>
         <paper-dialog id="signoutdialog" no-overlap horizontal-align="left" vertical-align="top">
@@ -146,7 +144,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // This shouldn't be neccessary, but the Analyzer isn't picking up
           // Polymer.Element#rootPath
           rootPath: String,
-          user: Object
+          user: Object,
+          isAuthenticated: {
+            type: Boolean,
+            value: false,
+          },
         };
       }
 
@@ -158,9 +160,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         firebase.auth().onAuthStateChanged(user => {
           if (user) {
             this.user = user;
+            this.isAuthenticated = true;
           } else {
             ///TODO: toast
             console.log('User is signed out.')
+            this.isAuthenticated = false;
           }
         });
       }
@@ -188,6 +192,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
           let result = await firebase.auth().signInWithPopup(provider);
           this.user = result.user;
+          this.isAuthenticated = true;
         } catch (error) {
           console.log(`signin error ${error} `)
         };
