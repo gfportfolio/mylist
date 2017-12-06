@@ -20,13 +20,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="my-icons.html">
+<link rel="import" href="components/login-model.html">
 
 <link rel="lazy-import" href="my-lists.html">
 <link rel="lazy-import" href="my-list-add.html">
-<link rel="lazy-import" href="my-view2.html">
+<link rel="lazy-import" href="my-signin.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
 
@@ -39,6 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --app-text-primary-color: #143327;
         --app-text-secondary-color: #1D5C44;
         --app-text-light-color: #FFFFFF;
+
         /*http://paletton.com/palette.php?uid=72C0u0klZh1u0I2qrqJjt9thA2A*/
         display: block;
       }
@@ -76,6 +79,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .img-circle {
         border-radius: 50%;
         width: 36px;
+        cursor: pointer;
+      }
+
+      .logout-dialog {
+        position: fixed;
+        top: 16px;
+        right: 16px;
+        border-radius: 4px;
+      }
+
+      .logout-dialog>paper-button {
+        position: relative;
+        margin: 16px;
+        padding: 16px;
+        border-radius: 4px;
+        background-color: var(--app-text-secondary-color);
+        color: var(--app-text-light-color);
+        cursor: pointer;
       }
     </style>
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -91,7 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="lists" href="[[rootPath]]lists">My Lists</a>
           <a name="list-add" href="[[rootPath]]list-add">My List Add</a>
-          <a name="view2" href="[[rootPath]]view2">View Two</a>
+          <a name="signin" href="[[rootPath]]signin">signin</a>
           <a name="view3" href="[[rootPath]]view3">View Three</a>
         </iron-selector>
       </app-drawer>
@@ -102,9 +123,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-header slot="header" condenses reveals effects="waterfall">
           <app-toolbar>
             <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-            <div main-title>My App</div>
-            <paper-icon-button icon="my-icons:person" on-tap="authenticateUser"> signin </paper-icon-button>
-            <img class="img-circle" src="[[user.photoURL]]" on-tap="signoutdialog.open()">
+            <div main-title>[[page]]</div>
+            <img class="img-circle" src="[[user.photoURL]]" on-tap="openSignOutDialog">
           </app-toolbar>
         </app-header>
         <paper-dialog id="signoutdialog" no-overlap horizontal-align="left" vertical-align="top">
@@ -113,13 +133,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <my-lists name="lists" route="{{route}}"></my-lists>
           <my-list-add name="list-add"></my-list-add>
-          <my-view2 name="view2"></my-view2>
+          <my-signin name="signin"></my-signin>
           <my-view3 name="view3"></my-view3>
           <my-view404 name="view404"></my-view404>
 
         </iron-pages>
       </app-header-layout>
     </app-drawer-layout>
+    <login-model id="loginModel"></login-model>
+    <paper-dialog id="signoutDialog" class="logout-dialog">
+      <paper-button raised on-click="signOutUser" dialog-dismiss>Signout</paper-button>
+    </paper-dialog>
   </template>
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
@@ -161,10 +185,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if (user) {
             this.user = user;
             this.isAuthenticated = true;
+            this.page = "lists"
           } else {
             ///TODO: toast
+            //this.$.loginModel.open();
             console.log('User is signed out.')
             this.isAuthenticated = false;
+            this.page = "signin"
           }
         });
       }
@@ -199,7 +226,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       signOutUser() {
-        firebase.auth().signOut()
+        this.$.signoutdialog.close();
+        firebase.auth().signOut();
+        this.page = 'signin';
+        this.user = "";
+
+      }
+
+      openSignOutDialog() {
+        console.log("open signeout dialog");
+        this.$.signoutDialog.open();
+
       }
 
       _pageChanged(page) {
