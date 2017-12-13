@@ -10,6 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 
 
@@ -33,14 +34,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --iron-icon-width: 20px;
         --iron-icon-height: 20px;
       }
-    </style>
 
-    <div class="card">
-      <h1>You are logged out!</h1>
-      <p>Only logged in users can see data. Please login below</p>
-      <paper-button class="google-login" raised on-click="authenticateUser">
-        Sign in with Google
-      </paper-button>
+      paper-card {
+        padding: 16px;
+        @apply --layout-vertical;
+      }
+
+      .signin-body {
+        @apply --layout-horizontal;
+        @apply --layout-center-justified;
+      }
+    </style>
+    <div class="signin-body">
+      <paper-card>
+        <h1>You are logged out!</h1>
+        <p>Only logged in users can see data. Please login below</p>
+        <paper-button class="google-login" raised on-click="authenticateUser">
+          Sign in with Google
+        </paper-button>
+      </paper-card>
     </div>
   </template>
 
