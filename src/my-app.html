@@ -37,12 +37,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
        :host {
         --app-primary-color: #487825;
         --app-secondary-color: #C1224C;
+        --app-secondary-background-color: #2B431A;
         --app-text-primary-color: #143327;
         --app-text-secondary-color: #1D5C44;
         --app-text-light-color: #FFFFFF;
-
+        --app-background: #EEEEEE;
         /*http://paletton.com/palette.php?uid=72C0u0klZh1u0I2qrqJjt9thA2A*/
         display: block;
+        --app-drawer-content-container: {
+          background-color: var(--app-background)
+        }
       }
 
       app-drawer-layout:not([narrow]) [drawer-toggle] {
@@ -97,17 +101,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: var(--app-text-light-color);
         cursor: pointer;
       }
+
+      .app-menu-toolbar>app-toolbar {
+        background-color: var(--app-primary-color);
+      }
+
+      app-toolbar {
+        color: var(--app-text-light-color);
+        background: var(--app-primary-color);
+        animation: toolbar-lighten .5s;
+        animation-fill-mode: backwards;
+      }
+
+      @keyframes toolbar-darken {
+        from {}
+        to {
+          background: var(--app-secondary-background-color);
+        }
+      }
+
+      @keyframes toolbar-lighten {
+        from {
+          background: var(--app-secondary-background-color);
+        }
+        to {}
+      }
+
+      app-toolbar[name=selected] {
+        animation: toolbar-darken .5s;
+        animation-fill-mode: forwards;
+      }
+
+      .layout-fix {
+        max-width: 900px;
+        margin: auto;
+      }
     </style>
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
     </app-location>
 
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
-
     <app-drawer-layout fullbleed narrow="{{narrow}}">
       <!-- Drawer content -->
-      <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
-        <app-toolbar>Menu</app-toolbar>
+      <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" class="app-menu-toolbar">
+        <app-toolbar>My Lists</app-toolbar>
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="lists" href="[[rootPath]]lists">My Lists</a>
           <a name="list-add" href="[[rootPath]]list-add">My List Add</a>
@@ -122,27 +160,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <iron-pages selected="[[toolbar]]" attr-for-selected="name">
             <app-toolbar name="main">
               <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-              <div main-title>[[page]]</div>
+              <div main-title>
+                <template is="dom-if" if="[[narrow]]">My Lists</template>
+              </div>
               <img class="img-circle" src="[[user.photoURL]]" on-tap="openSignOutDialog">
             </app-toolbar>
-            <app-toolbar name="selected">
+            <app-toolbar name="selected" class="selected-toolbar">
               <paper-icon-button icon="my-icons:menu" drawer-toggle></paper-icon-button>
-              <div main-title>[[page]]7</div>
+              <div main-title>
+                <template is="dom-if" if="[[!narrow]]">Selected Count: </template>[[selectedItems.length]]</div>
+              <div>
+                <template is="dom-if" if="[[singleItemSelected]]">
+                  <paper-icon-button icon="my-icons:mode-edit" on-tap="toolbarEditTap"></paper-icon-button>
+                </template>
+                <paper-icon-button icon="my-icons:delete" on-tap="toolbarDeleteTap"></paper-icon-button>
+              </div>
               <img class="img-circle" src="[[user.photoURL]]" on-tap="openSignOutDialog">
             </app-toolbar>
           </iron-pages>
         </app-header>
         <paper-dialog id="signoutdialog" no-overlap horizontal-align="left" vertical-align="top">
-          text here
         </paper-dialog>
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-          <my-lists selected-items="{{selectedItems}}" name="lists" route="{{route}}"></my-lists>
-          <my-list-add name="list-add"></my-list-add>
-          <my-signin name="signin"></my-signin>
-          <my-view3 name="view3"></my-view3>
-          <my-view404 name="view404"></my-view404>
+        <page-body>
+          <div class="layout-fix">
+            <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+              <my-lists selected-items="{{selectedItems}}" name="lists" route="{{route}}"></my-lists>
+              <my-list-add name="list-add"></my-list-add>
+              <my-signin name="signin"></my-signin>
+              <my-view3 name="view3"></my-view3>
+              <my-view404 name="view404"></my-view404>
 
-        </iron-pages>
+            </iron-pages>
+          </div>
+        </page-body>
       </app-header-layout>
     </app-drawer-layout>
     <paper-dialog id="signoutDialog" class="logout-dialog">
@@ -153,127 +203,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>
   <script src="../securityconfig.js"></script>
-
-  <script>
-    class MyApp extends Polymer.Element {
-      static get is() {
-        return 'my-app';
-      }
-
-      static get properties() {
-        return {
-          page: {
-            type: String,
-            reflectToAttribute: true,
-            observer: '_pageChanged',
-          },
-          selectedItems: {
-            type: Array,
-            reflectToAttribute: true,
-            observer: '_selectedItemsChanged',
-          },
-          toolbar: {
-            type: String,
-            value: 'main'
-          },
-          routeData: Object,
-          subroute: String,
-          // This shouldn't be neccessary, but the Analyzer isn't picking up
-          // Polymer.Element#rootPath
-          rootPath: String,
-          user: Object,
-          isAuthenticated: {
-            type: Boolean,
-            value: false,
-          },
-        };
-      }
-
-      ready() {
-        super.ready();
-        if (firebase.apps.length === 0) {
-          firebase.initializeApp(config);
-        }
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-            this.user = user;
-            this.isAuthenticated = true;
-            this.page = "lists"
-          } else {
-            ///TODO: toast
-            //this.$.loginModel.open();
-            console.log('User is signed out.')
-            this.isAuthenticated = false;
-            this.page = "signin"
-          }
-        });
-      }
-      static get observers() {
-        return [
-          '_routePageChanged(routeData.page)',
-          '_selectedItemsChanged(selectedItems.splices)'
-
-        ];
-      }
-
-      _routePageChanged(page) {
-        // If no page was found in the route data, page will be an empty string.
-        // Default to 'view1' in that case.
-        this.page = page || 'view1';
-
-        // Close a non-persistent drawer when the page & route are changed.
-        if (!this.$.drawer.persistent) {
-          this.$.drawer.close();
-        }
-      }
-
-      _selectedItemsChanged(selectedItems) {
-        if (selectedItems && selectedItems.lenght > 0) {
-          this.toolbar = 'selected'
-        }
-      }
-
-      async authenticateUser() {
-        let provider = new firebase.auth.GoogleAuthProvider();
-        try {
-          await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-          let result = await firebase.auth().signInWithPopup(provider);
-          this.user = result.user;
-          this.isAuthenticated = true;
-        } catch (error) {
-          console.log(`signin error ${error} `)
-        };
-      }
-
-      signOutUser() {
-        this.$.signoutdialog.close();
-        firebase.auth().signOut();
-        this.page = 'signin';
-        this.user = "";
-
-      }
-
-      openSignOutDialog() {
-        console.log("open signeout dialog");
-        this.$.signoutDialog.open();
-
-      }
-
-      _pageChanged(page) {
-        // Load page import on demand. Show 404 page if fails
-        var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-        Polymer.importHref(
-          resolvedPageUrl,
-          null,
-          this._showPage404.bind(this),
-          true);
-      }
-
-      _showPage404() {
-        this.page = 'view404';
-      }
-    }
-
-    window.customElements.define(MyApp.is, MyApp);
-  </script>
+  <script src="my-app.js"></script>
 </dom-module>

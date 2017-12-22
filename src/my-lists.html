@@ -34,8 +34,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --paper-fab-background: var(--app-secondary-color);
         --paper-fab-keyboard-focus-background: var(--app-secondary-color-hover);
       }
+
+      iron-list {
+        @apply --layout-vertical;
+      }
     </style>
-    <h4>Selected Count:[[selectedItems.length]]</h4>
     <iron-list id="list" selected-items="{{selectedItems}}" elevation="3" items="[[lists]]" as="item" multi-selection selection-enabled>
       <template>
         <titanium-letter-selectable-list-item heading="[[item.name]]" selected="[[selected]]" items="[[item]]">
@@ -46,70 +49,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <paper-fab icon="my-icons:add" class="add-fab" id="add" on-click="fabClick" title="Add Point"></paper-fab>
 
   </template>
-
-  <script>
-    class MyLists extends Polymer.Element {
-      static get is() {
-        return 'my-lists';
-      }
-      static get properties() {
-        return {
-          route: {
-            type: Object
-          },
-          lists: {
-            type: Array,
-          },
-          selectedItems: {
-            type: Array,
-            notify: true,
-            observer: '_selectedItemsChanged',
-          }
-        }
-      }
-      static get observers() {
-        return [
-          '_selectedItemsChanged(selectedItems.splices)'
-        ]
-      }
-      _selectedItemsChanged(selectedItems) {
-        if (selectedItems && selectedItems.lenght > 0) {}
-      }
-
-      connectedCallback() {
-        super.connectedCallback();
-        firebase.auth().onAuthStateChanged(user => {
-          if (user) {
-            this.loadUsersLists();
-          }
-        });
-      }
-
-      loadUsersLists() {
-        let self = this;
-        self.lists = [];
-        firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists')
-          .onSnapshot(function (recievedData) {
-            let recievedLists = [];
-            recievedData.docs.forEach(function (doc) {
-              recievedLists.push(doc.data());
-            });
-            self.set('lists', recievedLists);
-          });
-      }
-
-      fabClick() {
-        console.log("fab");
-        this.set('route.path', 'list-add/');
-      }
-
-      countItems(items) {
-        return typeof (items) == Array ? items.length : 0;
-      }
-    }
-
-
-
-    window.customElements.define(MyLists.is, MyLists);
-  </script>
+  <script src="my-lists.js"></script>
 </dom-module>
