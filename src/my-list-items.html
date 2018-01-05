@@ -1,0 +1,54 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/titanium-letter-selectable-list-item/titanium-letter-selectable-list-item.html">
+
+
+
+<dom-module id="my-list-items">
+  <template>
+    <style include="shared-styles">
+       :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      .add-fab {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        margin: 20px;
+        --paper-fab-background: var(--app-secondary-color);
+        --paper-fab-keyboard-focus-background: var(--app-secondary-color-hover);
+      }
+
+      iron-list {
+        @apply --layout-vertical;
+      }
+    </style>
+    <iron-list id="list" selected-items="{{selectedItems}}" elevation="3" items="[[lists]]" as="item" multi-selection selection-enabled>
+      <template>
+        items page
+        <titanium-letter-selectable-list-item heading="[[item.name]]" selected="[[selected]]" items="[[item]]">
+          <span slot="right">[[countItems(item.items)]] Items</span>
+        </titanium-letter-selectable-list-item>
+      </template>
+    </iron-list>
+    <paper-fab icon="my-icons:add" class="add-fab" id="add" on-click="fabClick" title="Add Point"></paper-fab>
+
+  </template>
+  <script src="my-list-items.js"></script>
+</dom-module>

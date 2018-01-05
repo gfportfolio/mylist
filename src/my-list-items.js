@@ -1,29 +1,19 @@
-class MyLists extends Polymer.Element {
+class MyListItems extends Polymer.Element {
   static get is() {
-    return 'my-lists';
+    return 'my-list-items';
   }
   static get properties() {
     return {
-      route: {
-        type: Object,
-        observer: '_routeChanged',
+      route: {type: Object}, lists: {
+        type: Array,
       },
-          lists: {
-            type: Array,
-          },
           selectedItems: {
             type: Array,
             notify: true,
             observer: '_selectedItemsChanged',
-          },
-          isActive: {type: Boolean}
+          }
     }
   }
-  ready() {
-    super.ready();
-    this.addEventListener('editItem', this._editItem);
-  }
-
   static get observers() {
     return ['_selectedItemsChanged(selectedItems.splices)']
   }
@@ -33,17 +23,6 @@ class MyLists extends Polymer.Element {
     }
   }
 
-  _editItem() {
-    this.set('route.path', 'list-items/');
-    this.set('route.data.selected', this.selectedItems[0]);
-  }
-
-  _routeChanged(route) {
-    this.isActive = false;
-    if (route.path === '/lists/') {
-      this.isActive = true;
-    }
-  }
   connectedCallback() {
     super.connectedCallback();
     firebase.auth().onAuthStateChanged(user => {
@@ -75,4 +54,4 @@ class MyLists extends Polymer.Element {
   }
 }
 
-window.customElements.define(MyLists.is, MyLists);
+window.customElements.define(MyListItems.is, MyListItems);
