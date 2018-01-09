@@ -25,6 +25,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="my-icons.html">
 
+<link rel="lazy-import" href="../bower_components/iron-signals/iron-signals.html">
+
+
 <link rel="lazy-import" href="my-lists.html">
 <link rel="lazy-import" href="my-list-add.html">
 <link rel="lazy-import" href="my-list-items.html">
@@ -185,7 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <page-body>
           <div class="layout-fix">
             <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-              <my-lists selected-items="{{selectedItems}}" name="lists" route="{{route}}"></my-lists>
+              <my-lists id="myLists" selected-items="{{selectedItems}}" name="lists" route="{{route}}"></my-lists>
               <my-list-add name="list-add"></my-list-add>
               <my-list-items name="list-items"></my-list-items>
               <my-signin name="signin"></my-signin>

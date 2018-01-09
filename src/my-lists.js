@@ -21,7 +21,6 @@ class MyLists extends Polymer.Element {
   }
   ready() {
     super.ready();
-    this.addEventListener('editItem', this._editItem);
   }
 
   static get observers() {
@@ -33,9 +32,24 @@ class MyLists extends Polymer.Element {
     }
   }
 
-  _editItem() {
+  editItem() {
+    if (!this.isActive) {
+      return;
+    }
     this.set('route.path', 'list-items/');
     this.set('route.data.selected', this.selectedItems[0]);
+  }
+
+  deleteItems() {
+    if (!this.isActive) {
+      return;
+    }
+    this.selectedItems.forEach(
+        element => {firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').doc(element.id).delete().then(function() {
+          console.log(`list ${element.id} deleted`);
+        })
+
+        });
   }
 
   _routeChanged(route) {
@@ -59,7 +73,8 @@ class MyLists extends Polymer.Element {
     firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').onSnapshot(function(recievedData) {
       let recievedLists = [];
       recievedData.docs.forEach(function(doc) {
-        recievedLists.push(doc.data());
+        var data = doc.data();
+        recievedLists.push({id: doc.id, items: data.items, name: data.name, owner: data.owner});
       });
       self.set('lists', recievedLists);
     });

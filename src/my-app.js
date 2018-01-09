@@ -68,11 +68,11 @@ class MyApp extends Polymer.Element {
   }
 
   toolbarEditTap() {
-    this.dispatchEvent(new CustomEvent('editItem', {bubbles: true, composed: true}));
+    this.$.myLists.editItem();
   }
 
   toolbarDeleteTap() {
-    this.dispatchEvent(new CustomEvent('deleteItems', {bubbles: true, composed: true}));
+    this.$.myLists.deleteItems();
   }
 
   _routePageChanged(page) {
