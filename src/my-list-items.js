@@ -4,23 +4,48 @@ class MyListItems extends Polymer.Element {
   }
   static get properties() {
     return {
-      route: {type: Object}, lists: {
-        type: Array,
+      route: {
+        type: Object,
+        observer: '_routeChanged',
       },
-          selectedItems: {
-            type: Array,
-            notify: true,
-            observer: '_selectedItemsChanged',
-          }
+          routeData: {
+            type: Object,
+          },
+          listId: {type: String}, items: {type: Object}, selectedItems: {type: Array, notify: true, observer: '_selectedItemsChanged'}, isActive: {type: Boolean}
     }
   }
   static get observers() {
     return ['_selectedItemsChanged(selectedItems.splices)']
   }
+
   _selectedItemsChanged(selectedItems) {
     if (this.selectedItems) {
       this.dispatchEvent(new CustomEvent('itemsSelected', {detail: this.selectedItems, bubbles: true, composed: true}));
     }
+  }
+
+  _routeChanged(route) {
+    this.isActive = false;
+    if (this.routeData.page === 'list-items') {
+      this.isActive = true;
+      let listId = this.routeData.listId;
+      if (this.listId !== listId) {
+        this._loadListData(listId);
+      }
+    }
+  }
+
+  _loadListData(listId) {
+    let self = this;
+    this.listId = listId;
+    firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').doc(listId).collection('items').onSnapshot(function(recievedData) {
+      let recievedItems = [];
+      recievedData.docs.forEach(function(doc) {
+        var data = doc.data();
+        recievedItems.push({id: doc.id, name: data.Name, purchased: data.Purchased, url: data.Url, photourl: data.photourl});
+      });
+      self.set('items', recievedItems);
+    });
   }
 
   connectedCallback() {
@@ -46,7 +71,7 @@ class MyListItems extends Polymer.Element {
 
   fabClick() {
     console.log('fab');
-    this.set('route.path', 'list-add/');
+    this.set('route.path', 'list-items-add/');
   }
 
   countItems(items) {

@@ -15,7 +15,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/titanium-letter-selectable-list-item/titanium-letter-selectable-list-item.html">
 <link rel="import" href="../bower_components/iron-signals/iron-signals.html">
-
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
 
 
 <dom-module id="my-lists">
@@ -40,6 +41,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply --layout-vertical;
       }
     </style>
+    <app-location route="{{route}}">
+    </app-location>
+
+    <app-route route="{{route}}" pattern="/:page/" data="{{routeData}}" tail="{{subroute}}">
+    </app-route>
     <iron-signals on-iron-signal-editItem="_editItem"></iron-signal>
       <iron-list id="list" selected-items="{{selectedItems}}" elevation="3" items="[[lists]]" as="item" multi-selection selection-enabled>
         <template>

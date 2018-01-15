@@ -1,7 +1,7 @@
 
-class MyListAdd extends Polymer.Element {
+class MyListItemsAdd extends Polymer.Element {
   static get is() {
-    return 'my-list-add';
+    return 'my-list-items-add';
   }
 
   static get properties() {
@@ -13,4 +13,4 @@ class MyListAdd extends Polymer.Element {
     this.set('route.path', 'lists/');
   }
 }
-window.customElements.define(MyListAdd.is, MyListAdd);
+window.customElements.define(MyListItemsAdd.is, MyListItemsAdd);

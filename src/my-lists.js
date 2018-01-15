@@ -8,6 +8,9 @@ class MyLists extends Polymer.Element {
         type: Object,
         observer: '_routeChanged',
       },
+          routeData: {
+            type: Object,
+          },
           lists: {
             type: Array,
           },
@@ -36,28 +39,25 @@ class MyLists extends Polymer.Element {
     if (!this.isActive) {
       return;
     }
-    this.set('route.path', 'list-items/');
-    this.set('route.data.selected', this.selectedItems[0]);
+    this.set('route.path', `list-items/${this.selectedItems[0].id}`);
   }
 
   deleteItems() {
     if (!this.isActive) {
       return;
     }
-    this.selectedItems.forEach(
-        element => {firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').doc(element.id).delete().then(function() {
-          console.log(`list ${element.id} deleted`);
-        })
-
-        });
+    this.selectedItems.forEach(element => {firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').doc(element.id).delete().then(function() {
+                                 console.log(`list ${element.id} deleted`);
+                               })});
   }
 
   _routeChanged(route) {
     this.isActive = false;
-    if (route.path === '/lists/') {
+    if (this.routeData.page === 'lists') {
       this.isActive = true;
     }
   }
+
   connectedCallback() {
     super.connectedCallback();
     firebase.auth().onAuthStateChanged(user => {
