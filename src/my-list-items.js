@@ -42,7 +42,7 @@ class MyListItems extends Polymer.Element {
       let recievedItems = [];
       recievedData.docs.forEach(function(doc) {
         var data = doc.data();
-        recievedItems.push({id: doc.id, name: data.Name, purchased: data.Purchased, url: data.Url, photourl: data.photourl});
+        recievedItems.push({id: doc.id, name: data.name, purchased: data.purchased, url: data.url, photoUrl: data.photoUrl});
       });
       self.set('items', recievedItems);
     });
@@ -71,7 +71,7 @@ class MyListItems extends Polymer.Element {
 
   fabClick() {
     console.log('fab');
-    this.set('route.path', 'list-items-add/');
+    this.set('route.path', `list-items-add/${this.listId}`);
   }
 
   countItems(items) {

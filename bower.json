@@ -28,7 +28,8 @@
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.0",
     "paper-card": "PolymerElements/paper-card#^2.0.0",
     "iron-list": "PolymerElements/iron-list#^2.0.12",
-    "iron-signals": "PolymerElements/iron-signals#^1.0.3"
+    "iron-signals": "PolymerElements/iron-signals#^1.0.3",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.1"
   },
   "resolutions": {
     "polymer": "^2.0.0"

@@ -10,10 +10,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
 
 <dom-module id="my-list-items-add">
   <template>
@@ -40,12 +43,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: var(--app-text-light-color);
       }
     </style>
+    <app-location route="{{route}}">
+    </app-location>
+    <app-route route="{{route}}" pattern="/:page/:listId" data="{{routeData}}" tail="{{subroute}}">
+    </app-route>
+
     <div class="card">
       <h1>Add a List</h1>
       <div class="form">
         <form is="iron-form" id="form">
           <paper-input id="nameInput" allowed-pattern="[a-zA-Z0-9 \s]" label="Name"></paper-input>
-          <paper-input id="ownerInput" allowed-pattern="[a-zA-Z0-9 \s]" label="Owner"></paper-input>
+          <paper-input id="urlInput" allowed-pattern="[a-zA-Z0-9 \s]" label="Url"></paper-input>
+          <paper-input id="photoUrlInput" allowed-pattern="[a-zA-Z0-9 \s]" label="PhotoUrl"></paper-input>
+          <paper-checkbox id="purchasedInput">Purchased</paper-checkbox>
         </form>
         <div class="buttons-section">
           <paper-button class="submit-button" id="submitButton" raised on-tap="submitClick">Submit</paper-button>

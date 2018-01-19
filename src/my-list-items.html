@@ -45,10 +45,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-route route="{{route}}" pattern="/:page/:listId" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
-    <iron-list id="list" selected-items="{{selectedItems}}" elevation="3" items="[[list]]" as="item" multi-selection selection-enabled>
+    <iron-list id="list" selected-items="{{selectedItems}}" elevation="3" items="[[items]]" as="item" multi-selection selection-enabled>
       <template>
         <titanium-letter-selectable-list-item heading="[[item.name]]" selected="[[selected]]" items="[[item]]">
-          <span slot="right">[[countItems(item.items)]] Items</span>
+          <span slot="right">[[itemCount]] Items</span>
         </titanium-letter-selectable-list-item>
       </template>
     </iron-list>
