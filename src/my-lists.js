@@ -40,6 +40,7 @@ class MyLists extends Polymer.Element {
       return;
     }
     this.set('route.path', `list-items/${this.selectedItems[0].id}`);
+    this.selectedItems == [];
   }
 
   deleteItems() {
@@ -53,7 +54,7 @@ class MyLists extends Polymer.Element {
 
   _routeChanged(route) {
     this.isActive = false;
-    if (this.routeData.page === 'lists') {
+    if (route.path.indexOf('lists') > -1) {
       this.isActive = true;
     }
   }

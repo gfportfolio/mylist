@@ -1,6 +1,6 @@
-class MyListItems extends Polymer.Element {
+class MyFriends extends Polymer.Element {
   static get is() {
-    return 'my-list-items';
+    return 'my-friends';
   }
   static get properties() {
     return {
@@ -11,13 +11,24 @@ class MyListItems extends Polymer.Element {
           routeData: {
             type: Object,
           },
-          listId: {type: String}, items: {type: Object}, selectedItems: {type: Array, notify: true, observer: '_selectedItemsChanged'}, isActive: {type: Boolean}
+          lists: {
+            type: Array,
+          },
+          selectedItems: {
+            type: Array,
+            notify: true,
+            observer: '_selectedItemsChanged',
+          },
+          isActive: {type: Boolean}
     }
   }
+  ready() {
+    super.ready();
+  }
+
   static get observers() {
     return ['_selectedItemsChanged(selectedItems.splices)']
   }
-
   _selectedItemsChanged(selectedItems) {
     if (this.selectedItems) {
       this.dispatchEvent(new CustomEvent('itemsSelected', {detail: this.selectedItems, bubbles: true, composed: true}));
@@ -28,7 +39,8 @@ class MyListItems extends Polymer.Element {
     if (!this.isActive) {
       return;
     }
-    this.set('route.path', `list-items-add/${this.selectedItems[0].id}`);
+    this.set('route.path', `list-items/${this.selectedItems[0].id}`);
+    this.selectedItems == [];
   }
 
   deleteItems() {
@@ -42,26 +54,9 @@ class MyListItems extends Polymer.Element {
 
   _routeChanged(route) {
     this.isActive = false;
-    if (this.routeData.page === 'list-items') {
+    if (route.path.indexOf('lists') > -1) {
       this.isActive = true;
-      let listId = this.routeData.listId;
-      if (this.listId !== listId) {
-        this._loadListData(listId);
-      }
     }
-  }
-
-  _loadListData(listId) {
-    let self = this;
-    this.listId = listId;
-    firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').doc(listId).collection('items').onSnapshot(function(recievedData) {
-      let recievedItems = [];
-      recievedData.docs.forEach(function(doc) {
-        var data = doc.data();
-        recievedItems.push({id: doc.id, name: data.name, purchased: data.purchased, url: data.url, photoUrl: data.photoUrl});
-      });
-      self.set('items', recievedItems);
-    });
   }
 
   connectedCallback() {
@@ -79,7 +74,8 @@ class MyListItems extends Polymer.Element {
     firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').onSnapshot(function(recievedData) {
       let recievedLists = [];
       recievedData.docs.forEach(function(doc) {
-        recievedLists.push(doc.data());
+        var data = doc.data();
+        recievedLists.push({id: doc.id, items: data.items, name: data.name, owner: data.owner});
       });
       self.set('lists', recievedLists);
     });
@@ -87,7 +83,7 @@ class MyListItems extends Polymer.Element {
 
   fabClick() {
     console.log('fab');
-    this.set('route.path', `list-items-add/${this.listId}`);
+    this.set('route.path', 'list-add/');
   }
 
   countItems(items) {
@@ -95,4 +91,4 @@ class MyListItems extends Polymer.Element {
   }
 }
 
-window.customElements.define(MyListItems.is, MyListItems);
+window.customElements.define(MyFriends.is, MyFriends);

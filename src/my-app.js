@@ -21,6 +21,7 @@ class MyApp extends Polymer.Element {
       // Polymer.Element#rootPath
       rootPath: String,
       user: Object,
+      selectedUserId: Object,
       isAuthenticated: {
         type: Boolean,
         value: false,
@@ -38,9 +39,13 @@ class MyApp extends Polymer.Element {
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.user = user;
+        this.selectedUserId = user.id;
         this.isAuthenticated = true;
-        this.page = 'lists';
-        this.set('route.path', 'lists/');
+        console.log('User is signed in.');
+        if (this.page === '') {
+          this.page = 'lists';
+          this.set('route.path', 'lists/');
+        }
       } else {
         /// TODO: toast
         // this.$.loginModel.open();
@@ -69,16 +74,24 @@ class MyApp extends Polymer.Element {
 
   toolbarEditTap() {
     this.$.myLists.editItem();
+    if (this.$.myListItems.editItem) {
+      this.$.myListItems.editItem();
+    }
+    this.toolbar = 'main';
   }
 
   toolbarDeleteTap() {
     this.$.myLists.deleteItems();
+    if (this.$.myListItems.editItem) {
+      this.$.myListItems.deleteItems();
+    }
+    this.toolbar = 'main';
   }
 
   _routePageChanged(page) {
     // If no page was found in the route data, page will be an empty string.
     // Default to 'view1' in that case.
-    this.page = page || 'view1';
+    this.page = page || 'my-lists';
 
     // Close a non-persistent drawer when the page & route are changed.
     if (!this.$.drawer.persistent) {
@@ -88,11 +101,11 @@ class MyApp extends Polymer.Element {
 
   async authenticateUser() {
     let provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
     try {
       await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
       let result = await firebase.auth().signInWithPopup(provider);
       this.user = result.user;
-      this.isAuthenticated = true;
     } catch (error) {
       console.log(`signin error ${error} `)
     };

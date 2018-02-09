@@ -31,6 +31,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-lists.html">
 <link rel="lazy-import" href="my-list-add.html">
 <link rel="lazy-import" href="my-list-items.html">
+<link rel="lazy-import" href="my-friends.html">
+<link rel="lazy-import" href="my-friend-add.html">
 <link rel="lazy-import" href="my-list-items-add.html">
 <link rel="lazy-import" href="my-signin.html">
 <link rel="lazy-import" href="my-view3.html">
@@ -39,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-app">
   <template>
     <style>
-       :host {
+      :host {
         --app-primary-color: #487825;
         --app-secondary-color: #C1224C;
         --app-secondary-background-color: #2B431A;
@@ -154,7 +156,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
           <a name="lists" href="[[rootPath]]lists">My Lists</a>
           <a name="list-add" href="[[rootPath]]list-add">My List Add</a>
-          <a name="view3" href="[[rootPath]]view3">View Three</a>
+          <a name="friend-add" href="[[rootPath]]friend-add">Add Friend</a>
+          <a name="friends" href="[[rootPath]]friend">Friends</a>
         </iron-selector>
       </app-drawer>
 
@@ -191,7 +194,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
               <my-lists id="myLists" selected-items="{{selectedItems}}" name="lists" route="{{route}}"></my-lists>
               <my-list-add route="{{route}}" name="list-add"></my-list-add>
-              <my-list-items route="{{route}}" name="list-items"></my-list-items>
+              <my-list-items id="myListItems" route="{{route}}" name="list-items"></my-list-items>
+              <my-list-items-add route="{{route}}" name="list-items-add"></my-list-items-add>
+              <my-list-items-add route="{{route}}" name="list-items-add"></my-list-items-add>
               <my-list-items-add route="{{route}}" name="list-items-add"></my-list-items-add>
               <my-signin name="signin"></my-signin>
               <my-view3 name="view3"></my-view3>
