@@ -25,8 +25,24 @@ class MyFriendAdd extends Polymer.Element {
     this.isActive = false;
     if (this.routeData.page === 'list-items-add') {
       this.isActive = true;
-      this.listId = this.routeData.listId;
     }
+  }
+//https://developers.google.com/api-client-library/javascript/start/start-js
+  async _googleApiStart() {
+    gapi.client
+        .init({
+          'apiKey': config.apiKey,
+          'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
+          'clientId': 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
+          'scope': 'profile',
+        })
+        .then(
+            function(response) {
+              console.log(response.result);
+            },
+            function(reason) {
+              console.log('Error: ' + reason.result.error.message);
+            });
   }
 }
 window.customElements.define(MyFriendAdd.is, MyFriendAdd);
