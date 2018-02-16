@@ -195,9 +195,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <my-lists id="myLists" selected-items="{{selectedItems}}" name="lists" route="{{route}}"></my-lists>
               <my-list-add route="{{route}}" name="list-add"></my-list-add>
               <my-list-items id="myListItems" route="{{route}}" name="list-items"></my-list-items>
-              <my-list-items-add route="{{route}}" name="list-items-add"></my-list-items-add>
-              <my-list-items-add route="{{route}}" name="list-items-add"></my-list-items-add>
-              <my-list-items-add route="{{route}}" name="list-items-add"></my-list-items-add>
+              <my-friend-add route="{{route}}" name="friend-add"></my-friend-add>
+              <my-friends route="{{route}}" name="friends-add"></my-friends>
               <my-signin name="signin"></my-signin>
               <my-view3 name="view3"></my-view3>
               <my-view404 name="view404"></my-view404>
@@ -211,6 +210,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-button raised on-click="signOutUser" dialog-dismiss>Signout</paper-button>
     </paper-dialog>
   </template>
+  <script src="https://apis.google.com/js/api.js"></script>
+
+
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-auth.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.6.2/firebase-firestore.js"></script>

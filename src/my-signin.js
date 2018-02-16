@@ -11,6 +11,7 @@ class MySignin extends Polymer.Element {
       let result = await firebase.auth().signInWithPopup(provider);
       this.user = result.user;
       this.isAuthenticated = true;
+      gapi.client.setToken(result.credential.accessToken);
     } catch (error) {
       console.log(`signin error ${error} `)
     };
