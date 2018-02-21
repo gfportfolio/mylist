@@ -15,7 +15,7 @@ class MyFriendAdd extends Polymer.Element {
 
   submitClick() {
     this.handleClientLoad();
-    this._googleApiStart();
+    // this._googleApiStart();
     // if (this.listId !== undefined) {
     //   firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').doc(this.listId).collection('items').add({
     //     name: this.$.nameInput.value,
@@ -27,11 +27,12 @@ class MyFriendAdd extends Polymer.Element {
     // }
   }
   handleClientLoad() {
+    let self = this;
     gapi.load('client', {
       callback: function() {
         // Handle gapi.client initialization.
-        this.initClient();
-        this._googleApiStart();
+        self.initClient();
+        self._googleApiStart();
 
       },
       onerror: function() {
@@ -56,11 +57,11 @@ class MyFriendAdd extends Polymer.Element {
   initClient() {
     // Initialize the client with API key and People API, and initialize OAuth with an
     // OAuth 2.0 client ID and scopes (space delimited string) to request access.
-    gapi.client.init({apiKey: config.apiKey, discoveryDocs: ['https://people.googleapis.com/$discovery/rest?version=v1'], clientId: `${this.clientId}.apps.googleusercontent.com`, scope: 'profile'}).then(function() {
+    gapi.client.init({apiKey: config.apiKey, discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/people/v1/rest'], clientId: `${clientId}.apps.googleusercontent.com`, scope: 'https://www.googleapis.com/auth/contacts.readonly'}).then(function() {
       // gapi.client.setToken();
 
     });
-  }
+  }  // https://developers.google.com/people/v1/read-people
   // https://developers.google.com/api-client-library/javascript/start/start-js
   _googleApiStart() {
     gapi.client.people.people.connections
