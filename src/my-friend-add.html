@@ -50,6 +50,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="card">
       <h1>Add a List</h1>
+      <template is="dom-repeat" items="[[contacts]]">
+        [[item.name]] [[item.emailAddress]]
+        <img src="[[item.photo]]"></img>
+      </template>
       <div class="form">
         <form is="iron-form" id="form">
           <paper-input id="nameInput" allowed-pattern="[a-zA-Z0-9 \s]" label="Name"></paper-input>
