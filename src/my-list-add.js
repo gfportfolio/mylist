@@ -9,7 +9,7 @@ class MyListAdd extends Polymer.Element {
   }
 
   submitClick() {
-    firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').add({name: this.$.nameInput.value, owner: this.$.ownerInput.value});
+    firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('lists').add({name: this.$.nameInput.value, owner: this.$.ownerInput.value});
     this.set('route.path', 'lists/');
   }
 }

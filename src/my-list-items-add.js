@@ -16,7 +16,7 @@ class MyListItemsAdd extends Polymer.Element {
 
   submitClick() {
     if (this.listId !== undefined) {
-      firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').doc(this.listId).collection('items').add({name: this.$.nameInput.value, url: this.$.urlInput.value, photoUrl: this.$.photoUrlInput.value, purchased: this.$.purchasedInput.checked});
+      firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('lists').doc(this.listId).collection('items').add({name: this.$.nameInput.value, url: this.$.urlInput.value, photoUrl: this.$.photoUrlInput.value, purchased: this.$.purchasedInput.checked});
       this.set('route.path', `lists-items/${this.listId}`);
     }
   }

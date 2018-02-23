@@ -47,7 +47,7 @@ class MyFriends extends Polymer.Element {
     if (!this.isActive) {
       return;
     }
-    this.selectedItems.forEach(element => {firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').doc(element.id).delete().then(function() {
+    this.selectedItems.forEach(element => {firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('lists').doc(element.id).delete().then(function() {
                                  console.log(`list ${element.id} deleted`);
                                })});
   }
@@ -71,7 +71,7 @@ class MyFriends extends Polymer.Element {
   loadUsersLists() {
     let self = this;
     self.lists = [];
-    firebase.firestore().collection('users').doc(firebase.auth().currentUser.uid).collection('lists').onSnapshot(function(recievedData) {
+    firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('lists').onSnapshot(function(recievedData) {
       let recievedLists = [];
       recievedData.docs.forEach(function(doc) {
         var data = doc.data();
