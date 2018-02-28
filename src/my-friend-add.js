@@ -4,7 +4,7 @@ class MyFriendAdd extends Polymer.Element {
   }
 
   static get properties() {
-    return {userId: {type: Number}, route: {type: Object}, routeData: {type: Object, observer: '_routeChanged'}, isActive: {type: Boolean}, listId: {type: String}, contacts: {type: [Object]}};
+    return {userId: {type: Number}, route: {type: Object}, routeData: {type: Object, observer: '_routeChanged'}, isActive: {type: Boolean, observer: '_activeChanged'}, listId: {type: String}, contacts: {type: [Object]}};
   }
 
   submitClick() {
@@ -12,20 +12,18 @@ class MyFriendAdd extends Polymer.Element {
   }
   handleClientLoad() {
     let self = this;
+    if (!gapi.load)
+      return;
     gapi.load('client', {
       callback: function() {
-        // Handle gapi.client initialization.
         self.initClient();
-        self._googleApiStart();
 
       },
       onerror: function() {
-        // Handle loading error.
         alert('gapi.client failed to load!');
       },
       timeout: 5000,  // 5 seconds.
       ontimeout: function() {
-        // Handle timeout.
         alert('gapi.client could not load in a timely manner!');
       }
     });
@@ -33,9 +31,15 @@ class MyFriendAdd extends Polymer.Element {
 
   _routeChanged(route) {
     this.isActive = false;
-    if (this.routeData.page === 'list-items-add') {
+    if (this.routeData.page === 'friend-add') {
       this.isActive = true;
     }
+  }
+
+  _activeChanged(isActive) {
+    if (!isActive)
+      return;
+    this.handleClientLoad();
   }
 
   initClient() {

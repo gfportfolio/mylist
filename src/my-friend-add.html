@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="shared-styles.html">
@@ -22,50 +23,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <style include="shared-styles">
       :host {
-        display: block;
-
-        padding: 10px;
-      }
-
-      .form {
-        @apply --iron-flex;
         @apply --layout-vertical;
       }
 
-      .buttons-section {
-        @apply --iron-flex;
-        @apply --layout-horizontal;
-        @apply --layout-end-justified;
+      img {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        padding: 8px;
+        @apply --layout-self-center;
       }
 
-      .submit-button {
-        background-color: var(--app-secondary-color);
-        color: var(--app-text-light-color);
+      friend-card {
+        background-color: white;
+        @apply --layout-flex;
+      }
+
+      contact-info {
+        @apply --layout-horizontal;
+      }
+
+      contact-details {
+        @apply --layout-vertical;
+        padding: 8px;
+      }
+
+      contact-name {
+        @apply --paper-font-title;
+      }
+
+      contact-email {
+        @apply --paper-font-caption;
       }
     </style>
     <app-location route="{{route}}">
     </app-location>
-    <app-route route="{{route}}" pattern="/:page/:listId" data="{{routeData}}" tail="{{subroute}}">
+    <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
-    <div class="card">
-      <h1>Add a List</h1>
+    <h1>Add a Contact</h1>
+    <friend-card>
       <template is="dom-repeat" items="[[contacts]]">
-        [[item.name]] [[item.emailAddress]]
-        <img src="[[item.photo]]"></img>
+        <contact-info>
+          <img src="[[item.photo]]"></img>
+          <contact-details>
+            <contact-name>[[item.name]]</contact-name>
+            <contact-email> [[item.emailAddress]]</contact-email>
+          </contact-details>
+        </contact-info>
       </template>
-      <div class="form">
-        <form is="iron-form" id="form">
-          <paper-input id="nameInput" allowed-pattern="[a-zA-Z0-9 \s]" label="Name"></paper-input>
-          <paper-input id="urlInput" label="Url"></paper-input>
-          <paper-input id="photoUrlInput" label="PhotoUrl"></paper-input>
-          <paper-checkbox id="purchasedInput">Purchased</paper-checkbox>
-        </form>
-        <div class="buttons-section">
-          <paper-button class="submit-button" id="submitButton" raised on-tap="submitClick">Submit</paper-button>
-        </div>
-      </div>
-    </div>
+    </friend-card>
   </template>
   <script src="../securityconfig.js"></script>
   <script src="my-friend-add.js"></script>
