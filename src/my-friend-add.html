@@ -18,6 +18,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="my-icons.html">
+
 
 <dom-module id="my-friend-add">
   <template>
@@ -34,7 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply --layout-self-center;
       }
 
-      friend-card {
+      iron-list {
         background-color: white;
         @apply --layout-flex;
       }
@@ -45,6 +49,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       contact-details {
         @apply --layout-vertical;
+        @apply --layout-flex;
         padding: 8px;
       }
 
@@ -55,23 +60,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       contact-email {
         @apply --paper-font-caption;
       }
+
+      paper-icon-button {
+        @apply --layout-self-center;
+        @apply --layout-end-justified;
+        margin: 8px;
+      }
     </style>
     <app-location route="{{route}}">
     </app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
-    <h1>Add a Contact</h1>
+    <h1>Allow a contact to see your lists</h1>
     <friend-card>
-      <template is="dom-repeat" items="[[contacts]]">
-        <contact-info>
-          <img src="[[item.photo]]"></img>
-          <contact-details>
-            <contact-name>[[item.name]]</contact-name>
-            <contact-email> [[item.emailAddress]]</contact-email>
-          </contact-details>
-        </contact-info>
-      </template>
+      <iron-list id="list" items="[[contacts]]" as="item">
+        <template>
+          <contact-info>
+            <img src="[[item.photo]]"></img>
+            <contact-details>
+              <contact-name>[[item.name]]</contact-name>
+              <contact-email> [[item.emailAddress]]</contact-email>
+
+            </contact-details>
+            <paper-icon-button icon="my-icons:add" on-tap="_addToFriends" data-args="[[item]]"></paper-icon-button>
+          </contact-info>
+        </template>
+      </iron-list>
     </friend-card>
   </template>
   <script src="../securityconfig.js"></script>
