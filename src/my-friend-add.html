@@ -83,7 +83,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <contact-email> [[item.emailAddress]]</contact-email>
 
             </contact-details>
-            <paper-icon-button icon="my-icons:add" on-tap="_addToFriends" data-args="[[item]]"></paper-icon-button>
+            <paper-icon-button icon="my-icons:add-list" on-tap="_requestToSeeThereLists" data-args="[[item]]" alt="request to see there lists"></paper-icon-button>
+            <paper-icon-button icon="my-icons:eye" on-tap="_allowToSeeMyLists" data-args="[[item]]" alt="allow to see your lists"></paper-icon-button>
           </contact-info>
         </template>
       </iron-list>
