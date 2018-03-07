@@ -43,16 +43,12 @@ class MyFriendAdd extends Polymer.Element {
   }
 
   initClient() {
-    // Initialize the client with API key and People API, and initialize OAuth with an
-    // OAuth 2.0 client ID and scopes (space delimited string) to request access.
     let self = this;
 
     gapi.client.init({apiKey: config.apiKey, discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/people/v1/rest'], clientId: `${clientId}.apps.googleusercontent.com`, scope: 'https://www.googleapis.com/auth/contacts.readonly'}).then(function() {
-      // gapi.client.setToken();
       self._googleApiStart();
     });
-  }  // https://developers.google.com/people/v1/read-people
-  // https://developers.google.com/api-client-library/javascript/start/start-js
+  }
 
   _googleApiStart() {
     let self = this;

@@ -17,7 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-signals/iron-signals.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
-
+<link rel="import" href="../bower_components/paper-styles/paper-styles.html">
 
 <dom-module id="my-friends">
   <template>
@@ -37,8 +37,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --paper-fab-keyboard-focus-background: var(--app-secondary-color-hover);
       }
 
+      img {
+        height: 40px;
+        width: 40px;
+        border-radius: 50%;
+        padding: 8px;
+        @apply --layout-self-center;
+      }
+
       iron-list {
+        background-color: white;
+        @apply --layout-flex;
+      }
+
+      contact-info {
+        @apply --layout-horizontal;
+      }
+
+      contact-details {
         @apply --layout-vertical;
+        @apply --layout-flex;
+        padding: 8px;
+      }
+
+      contact-name {
+        @apply --paper-font-title;
+      }
+
+      contact-email {
+        @apply --paper-font-caption;
+      }
+
+      paper-icon-button {
+        @apply --layout-self-center;
+        @apply --layout-end-justified;
+        margin: 8px;
       }
     </style>
     <app-location route="{{route}}">
@@ -46,15 +79,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-route route="{{route}}" pattern="/:page/" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
-    <iron-signals on-iron-signal-editItem="_editItem"></iron-signal>
-      <iron-list id="list" selected-items="{{selectedItems}}" elevation="3" items="[[lists]]" as="item" multi-selection selection-enabled>
-        <template>
-          <titanium-letter-selectable-list-item heading="[[item.name]]" selected="[[selected]]" items="[[item]]">
-            <span slot="right">[[countItems(item.items)]] Items</span>
-          </titanium-letter-selectable-list-item>
-        </template>
-      </iron-list>
-      <paper-fab icon="my-icons:add" class="add-fab" id="add" on-click="fabClick" title="Add Point"></paper-fab>
+    Requests
+    <iron-list id="requests" elevation="3" items="[[requests]]" as="request">
+      <template>
+        <contact-info>
+          <img src="[[request.photoUrl]]"></img>
+          <contact-details>
+            <contact-name>[[request.name]]</contact-name>
+            <contact-email> [[request.emailAddress]]</contact-email>
+          </contact-details>
+          <paper-icon-button icon="my-icons:approve-list" on-tap="_approveRequest" data-args="[[friend]]" alt="approve request"></paper-icon-button>
+        </contact-info>
+      </template>
+    </iron-list>
+    Viewers
+    <iron-list id="viewers" elevation="3" items="[[viewers]]" as="viewer">
+      <template>
+        <contact-info>
+          <img src="[[viewer.photoUrl]]"></img>
+          <contact-details>
+            <contact-name>[[viewer.name]]</contact-name>
+            <contact-email> [[viewer.emailAddress]]</contact-email>
+          </contact-details>
+          <paper-icon-button icon="my-icons:eye-off" on-tap="_stopViewingMyLists" data-args="[[viewer]]" alt="stop seeing your lists"></paper-icon-button>
+        </contact-info>
+      </template>
+    </iron-list>
+    Friends
+    <iron-list id="friends" elevation="3" items="[[friends]]" as="friend">
+      <template>
+        <contact-info>
+          <img src="[[friend.photoUrl]]"></img>
+          <contact-details>
+            <contact-name>[[friend.name]]</contact-name>
+            <contact-email> [[friend.emailAddress]]</contact-email>
+          </contact-details>
+          <paper-icon-button icon="my-icons:remove-list" on-tap="_stopSeeingThereLists" data-args="[[request]]" alt="stop seeing there lists"></paper-icon-button>
+        </contact-info>
+      </template>
+    </iron-list>
+    <paper-fab icon="my-icons:add" class="add-fab" id="add" on-click="fabClick" title="Add Point"></paper-fab>
 
   </template>
   <script src="my-friends.js"></script>
