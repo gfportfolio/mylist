@@ -26,6 +26,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
 
         padding: 10px;
+
+        @apply --layout-vertical;
       }
 
       .add-fab {
@@ -73,51 +75,83 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply --layout-end-justified;
         margin: 8px;
       }
+
+      paper-icon-button[red] {
+        color: var(--paper-red-700);
+      }
+
+      paper-icon-button[green] {
+        color: var(--paper-green-700);
+      }
+
+      contact-section {
+        padding: 16px 0 8px 0;
+        border-bottom: 1px solid;
+      }
+
+      contact-section-header {
+        padding: 16px 0;
+      }
+
+      iron-list {
+        margin: 4px 0;
+
+        @apply --layout-vertical;
+      }
     </style>
     <app-location route="{{route}}">
     </app-location>
 
     <app-route route="{{route}}" pattern="/:page/" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
-    Requests
-    <iron-list id="requests" elevation="3" items="[[requests]]" as="request">
-      <template>
-        <contact-info>
-          <img src="[[request.photoUrl]]"></img>
-          <contact-details>
-            <contact-name>[[request.name]]</contact-name>
-            <contact-email> [[request.emailAddress]]</contact-email>
-          </contact-details>
-          <paper-icon-button icon="my-icons:approve-list" on-tap="_approveRequest" data-args="[[friend]]" alt="approve request"></paper-icon-button>
-        </contact-info>
-      </template>
-    </iron-list>
-    Viewers
-    <iron-list id="viewers" elevation="3" items="[[viewers]]" as="viewer">
-      <template>
-        <contact-info>
-          <img src="[[viewer.photoUrl]]"></img>
-          <contact-details>
-            <contact-name>[[viewer.name]]</contact-name>
-            <contact-email> [[viewer.emailAddress]]</contact-email>
-          </contact-details>
-          <paper-icon-button icon="my-icons:eye-off" on-tap="_stopViewingMyLists" data-args="[[viewer]]" alt="stop seeing your lists"></paper-icon-button>
-        </contact-info>
-      </template>
-    </iron-list>
-    Friends
-    <iron-list id="friends" elevation="3" items="[[friends]]" as="friend">
-      <template>
-        <contact-info>
-          <img src="[[friend.photoUrl]]"></img>
-          <contact-details>
-            <contact-name>[[friend.name]]</contact-name>
-            <contact-email> [[friend.emailAddress]]</contact-email>
-          </contact-details>
-          <paper-icon-button icon="my-icons:remove-list" on-tap="_stopSeeingThereLists" data-args="[[request]]" alt="stop seeing there lists"></paper-icon-button>
-        </contact-info>
-      </template>
-    </iron-list>
+    <contact-section>
+      <contact-section-header>Friends
+      </contact-section-header>
+      <iron-list id="friends" elevation="3" items="[[friends]]" as="friend">
+        <template>
+          <contact-info>
+            <img src="[[friend.photoUrl]]"></img>
+            <contact-details>
+              <contact-name>[[friend.name]]</contact-name>
+              <contact-email> [[friend.emailAddress]]</contact-email>
+            </contact-details>
+            <paper-icon-button icon="my-icons:see-list" on-tap="_viewFriendsList" data-args="[[friend]]" alt="see there lists"></paper-icon-button>
+            <paper-icon-button red icon="my-icons:remove-list" on-tap="_stopSeeingThereLists" data-args="[[friend]]" alt="stop seeing there lists"></paper-icon-button>
+          </contact-info>
+        </template>
+      </iron-list>
+    </contact-section>
+    <contact-section>
+      <contact-section-header>
+        Requests</contact-section-header>
+      <iron-list id="requests" elevation="3" items="[[requests]]" as="request">
+        <template>
+          <contact-info>
+            <img src="[[request.photoUrl]]"></img>
+            <contact-details>
+              <contact-name>[[request.name]]</contact-name>
+              <contact-email> [[request.emailAddress]]</contact-email>
+            </contact-details>
+            <paper-icon-button green icon="my-icons:approve-list" on-tap="_approveRequest" data-args="[[friend]]" alt="approve request"></paper-icon-button>
+          </contact-info>
+        </template>
+      </iron-list>
+    </contact-section>
+    <contact-section>
+      <contact-section-header>Viewers</contact-section-header>
+      <iron-list id="viewers" elevation="3" items="[[viewers]]" as="viewer">
+        <template>
+          <contact-info>
+            <img src="[[viewer.photoUrl]]"></img>
+            <contact-details>
+              <contact-name>[[viewer.name]]</contact-name>
+              <contact-email> [[viewer.emailAddress]]</contact-email>
+            </contact-details>
+            <paper-icon-button red icon="my-icons:eye-off" on-tap="_stopViewingMyLists" data-args="[[viewer]]" alt="stop seeing your lists"></paper-icon-button>
+          </contact-info>
+        </template>
+      </iron-list>
+    </contact-section>
     <paper-fab icon="my-icons:add" class="add-fab" id="add" on-click="fabClick" title="Add Point"></paper-fab>
 
   </template>
