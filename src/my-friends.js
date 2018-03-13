@@ -18,15 +18,6 @@ class MyFriends extends Polymer.Element {
     super.ready();
   }
 
-  // static get observers() {
-  //   return ['_selectedItemsChanged(selectedItems.splices)']
-  // }
-  // _selectedItemsChanged(selectedItems) {
-  //   if (this.selectedItems) {
-  //     this.dispatchEvent(new CustomEvent('itemsSelected', {detail: this.selectedItems, bubbles: true, composed: true}));
-  //   }
-  // }
-
   _routeChanged(route) {
     this.isActive = false;
     if (route.path.indexOf('friends') > -1) {
@@ -52,6 +43,7 @@ class MyFriends extends Polymer.Element {
         recievedLists.push({name: data.name, emailAddress: data.emailAddress, photoUrl: data.photoUrl});
       });
       self.set('friends', recievedLists);
+      Polymer.flush();
     });
     firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('viewers').onSnapshot(function(recievedData) {
       let recievedLists = [];
@@ -70,6 +62,22 @@ class MyFriends extends Polymer.Element {
       });
       self.set('requests', recievedLists);
     });
+  }
+
+  _viewFriendsList() {
+  }
+  async _stopSeeingFriendsLists(e) {
+    var rowData = e.currentTarget.dataArgs;
+    try {
+      await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('friends').doc(rowData.emailAddress).delete();
+      console.log('success');
+    } catch (error) {
+      console.error('Error removing document: ', error);
+    };
+  }
+  _approveRequest() {
+  }
+  _stopViewingMyLists() {
   }
 
   fabClick() {

@@ -75,14 +75,14 @@ class MyFriendAdd extends Polymer.Element {
     let userData = {name: user.name, emailAddress: user.emailAddress, photoUrl: user.photo};
     let firebaseUser = firebase.auth().currentUser;
     let firebaseData = {name: firebaseUser.displayName, emailAddress: firebaseUser.email, photoUrl: firebaseUser.photoURL};
-    firebase.firestore().collection('users').doc(firebaseUser.email).collection('viewers').add(userData);
-    firebase.firestore().collection('users').doc(user.emailAddress).collection('friends').add(firebaseData);
+    firebase.firestore().collection('users').doc(firebaseUser.email).collection('viewers').doc(userData.emailAddress).set(userData);
+    firebase.firestore().collection('users').doc(user.emailAddress).collection('friends').doc(firebaseData.emailAddress).set(firebaseData);
   }
   _requestToSeeThereLists(e) {
     let user = e.currentTarget.dataArgs;
     let firebaseUser = firebase.auth().currentUser;
     let firebaseData = {name: firebaseUser.displayName, emailAddress: firebaseUser.email, photoUrl: firebaseUser.photoURL};
-    firebase.firestore().collection('users').doc(user.emailAddress).collection('requests').add(firebaseData);
+    firebase.firestore().collection('users').doc(user.emailAddress).collection('requests').doc(firebaseData.emailAddress).set(firebaseData);
   }
 }
 window.customElements.define(MyFriendAdd.is, MyFriendAdd);
