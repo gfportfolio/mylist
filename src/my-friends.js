@@ -52,7 +52,7 @@ class MyFriends extends Polymer.Element {
         recievedLists.push({name: data.name, emailAddress: data.emailAddress, photoUrl: data.photoUrl});
       });
       self.set('viewers', recievedLists);
-      console.log(recievedLists);
+      Polymer.flush();
     });
     firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('requests').onSnapshot(function(recievedData) {
       let recievedLists = [];
@@ -61,11 +61,13 @@ class MyFriends extends Polymer.Element {
         recievedLists.push({name: data.name, emailAddress: data.emailAddress, photoUrl: data.photoUrl});
       });
       self.set('requests', recievedLists);
+      Polymer.flush();
     });
   }
 
   _viewFriendsList() {
   }
+
   async _stopSeeingFriendsLists(e) {
     var rowData = e.currentTarget.dataArgs;
     try {
@@ -75,9 +77,27 @@ class MyFriends extends Polymer.Element {
       console.error('Error removing document: ', error);
     };
   }
-  _approveRequest() {
+
+  async _approveRequest(e) {
+    let user = e.currentTarget.dataArgs;
+    let userData = {name: user.name, emailAddress: user.emailAddress, photoUrl: user.photoUrl};
+    try {
+      await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('viewers').doc(user.emailAddress).set(userData);
+      await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('requests').doc(user.emailAddress).delete();
+      console.log('success');
+    } catch (error) {
+      console.error('Error removing document: ', error);
+    };
   }
-  _stopViewingMyLists() {
+
+  async _stopViewingMyLists(e) {
+    var rowData = e.currentTarget.dataArgs;
+    try {
+      await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('viewers').doc(rowData.emailAddress).delete();
+      console.log('success');
+    } catch (error) {
+      console.error('Error removing document: ', error);
+    };
   }
 
   fabClick() {

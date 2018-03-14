@@ -78,6 +78,7 @@ class MyFriendAdd extends Polymer.Element {
     firebase.firestore().collection('users').doc(firebaseUser.email).collection('viewers').doc(userData.emailAddress).set(userData);
     firebase.firestore().collection('users').doc(user.emailAddress).collection('friends').doc(firebaseData.emailAddress).set(firebaseData);
   }
+
   _requestToSeeThereLists(e) {
     let user = e.currentTarget.dataArgs;
     let firebaseUser = firebase.auth().currentUser;
