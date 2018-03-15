@@ -69,9 +69,15 @@ class MyFriends extends Polymer.Element {
   }
 
   async _stopSeeingFriendsLists(e) {
-    var rowData = e.currentTarget.dataArgs;
+    let user = e.currentTarget.dataArgs;
+    let userData = {name: user.name, emailAddress: user.emailAddress, photoUrl: user.photoUrl};
+    let firebaseUser = firebase.auth().currentUser;
+    let firebaseData = {name: firebaseUser.displayName, emailAddress: firebaseUser.email, photoUrl: firebaseUser.photoURL};
+
     try {
-      await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('friends').doc(rowData.emailAddress).delete();
+      await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('friends').doc(user.emailAddress).delete();
+      await firebase.firestore().collection('users').doc(user.emailAddress).collection('viewers').doc(firebase.auth().currentUser.email).delete();
+
       console.log('success');
     } catch (error) {
       console.error('Error removing document: ', error);
@@ -81,8 +87,11 @@ class MyFriends extends Polymer.Element {
   async _approveRequest(e) {
     let user = e.currentTarget.dataArgs;
     let userData = {name: user.name, emailAddress: user.emailAddress, photoUrl: user.photoUrl};
+    let firebaseUser = firebase.auth().currentUser;
+    let firebaseData = {name: firebaseUser.displayName, emailAddress: firebaseUser.email, photoUrl: firebaseUser.photoURL};
     try {
       await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('viewers').doc(user.emailAddress).set(userData);
+      await firebase.firestore().collection('users').doc(user.emailAddress).collection('friends').doc(firebase.auth().currentUser.email).set(firebaseData);
       await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('requests').doc(user.emailAddress).delete();
       console.log('success');
     } catch (error) {
@@ -91,9 +100,13 @@ class MyFriends extends Polymer.Element {
   }
 
   async _stopViewingMyLists(e) {
-    var rowData = e.currentTarget.dataArgs;
+    let user = e.currentTarget.dataArgs;
+    let userData = {name: user.name, emailAddress: user.emailAddress, photoUrl: user.photoUrl};
+    let firebaseUser = firebase.auth().currentUser;
+    let firebaseData = {name: firebaseUser.displayName, emailAddress: firebaseUser.email, photoUrl: firebaseUser.photoURL};
     try {
-      await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('viewers').doc(rowData.emailAddress).delete();
+      await firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('viewers').doc(user.emailAddress).delete();
+      await firebase.firestore().collection('users').doc(user.emailAddress).collection('friends').doc(firebase.auth().currentUser.email).delete();
       console.log('success');
     } catch (error) {
       console.error('Error removing document: ', error);
