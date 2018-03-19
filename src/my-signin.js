@@ -15,7 +15,7 @@ class MySignin extends Polymer.Element {
     } catch (error) {
       console.log(`signin error ${error} `)
     };
-    this.close();
+    this.set('route.path', 'lists/');
   }
 }
 
