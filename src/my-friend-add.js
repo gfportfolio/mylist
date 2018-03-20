@@ -56,14 +56,14 @@ class MyFriendAdd extends Polymer.Element {
     gapi.client.people.people.connections
         .list({
           'resourceName': 'people/me',
-          'pageSize': 10,
+          'pageSize': 1000,
           'personFields': 'names,emailAddresses,Photos',  // https://developers.google.com/people/api/rest/v1/people
         })
         .then(function(response) {
           var connections = response.result.connections;
           var userContacts = new Array();
           if (connections.length > 0) {
-            connections.forEach(element => {userContacts.push({name: element.names[0].displayName, emailAddress: element.emailAddresses[0].value, photo: element.photos[0].url})});
+            connections.forEach(element => {userContacts.push({name: element.names ? element.names[0].displayName : null, emailAddress: element.emailAddresses ? element.emailAddresses[0].value : null, photo: element.photos ? element.photos[0].url : null})});
             self.set('contacts', userContacts);
             console.log(self.contacts);
           }

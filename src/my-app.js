@@ -91,7 +91,7 @@ class MyApp extends Polymer.Element {
   _routePageChanged(page) {
     // If no page was found in the route data, page will be an empty string.
     // Default to 'view1' in that case.
-    this.page = page || 'my-lists';
+    this.page = page || 'friends';
 
     // Close a non-persistent drawer when the page & route are changed.
     if (!this.$.drawer.persistent) {
