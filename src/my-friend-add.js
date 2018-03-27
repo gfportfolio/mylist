@@ -52,6 +52,18 @@ class MyFriendAdd extends Polymer.Element {
 
   _googleApiStart() {
     let self = this;
+    let googleUser = gapi.auth2.getAuthInstance().currentUser.get();
+    let isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
+    if (!isSignedIn) {
+      try {
+        let result = firebase.auth().getRedirectResult().then(function(result) {
+          console.log(result);
+        });
+        let token = result.credential.accessToken;
+      } catch (error) {
+        console.log(error);
+      }
+    }
     this.contacts = new Array();
     gapi.client.people.people.connections
         .list({
