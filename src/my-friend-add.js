@@ -50,16 +50,19 @@ class MyFriendAdd extends Polymer.Element {
     });
   }
 
-  _googleApiStart() {
+  async _googleApiStart() {
     let self = this;
     let googleUser = gapi.auth2.getAuthInstance().currentUser.get();
     let isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
     if (!isSignedIn) {
       try {
-        let result = firebase.auth().getRedirectResult().then(function(result) {
-          console.log(result);
-        });
-        let token = result.credential.accessToken;
+        let provider = new firebase.auth.GoogleAuthProvider();
+        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+        let result = await firebase.auth().signInWithPopup(provider);
+        this.user = result.user;
+        this.isAuthenticated = true;
+        gapi.client.setToken({access_token: result.credential.accessToken});
       } catch (error) {
         console.log(error);
       }
