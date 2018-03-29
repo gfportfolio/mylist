@@ -20,6 +20,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
 <link rel="import" href="my-icons.html">
 
 
@@ -66,29 +68,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply --layout-end-justified;
         margin: 8px;
       }
+
+      .google-login {
+        background-color: #db3236;
+        color: var(--app-text-light-color);
+      }
+
+      .google-login>iron-icon {
+        --iron-icon-width: 20px;
+        --iron-icon-height: 20px;
+      }
     </style>
     <app-location route="{{route}}">
     </app-location>
     <app-route route="{{route}}" pattern="/:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
-
     <h1>Allow a contact to see your lists</h1>
-    <friend-card>
-      <iron-list id="list" items="[[contacts]]" as="item">
-        <template>
-          <contact-info>
-            <img src="[[item.photo]]"></img>
-            <contact-details>
-              <contact-name>[[item.name]]</contact-name>
-              <contact-email> [[item.emailAddress]]</contact-email>
+    <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selected="friends">
+      <friend-card name="friends">
+        <iron-list id="list" items="[[contacts]]" as="item">
+          <template>
+            <contact-info>
+              <img src="[[item.photo]]"></img>
+              <contact-details>
+                <contact-name>[[item.name]]</contact-name>
+                <contact-email> [[item.emailAddress]]</contact-email>
 
-            </contact-details>
-            <paper-icon-button icon="my-icons:add-list" on-tap="_requestToSeeThereLists" data-args="[[item]]" alt="request to see there lists"></paper-icon-button>
-            <paper-icon-button icon="my-icons:eye" on-tap="_allowToSeeMyLists" data-args="[[item]]" alt="allow to see your lists"></paper-icon-button>
-          </contact-info>
-        </template>
-      </iron-list>
-    </friend-card>
+              </contact-details>
+              <paper-icon-button icon="my-icons:add-list" on-tap="_requestToSeeThereLists" data-args="[[item]]" alt="request to see there lists"></paper-icon-button>
+              <paper-icon-button icon="my-icons:eye" on-tap="_allowToSeeMyLists" data-args="[[item]]" alt="allow to see your lists"></paper-icon-button>
+            </contact-info>
+          </template>
+        </iron-list>
+      </friend-card>
+      <no-auth name="no-auth">
+        <h2>Sorry for some reason we dont have access to see your google contacts. Please try signing in below.</h2>
+        <paper-button class="google-login" raised on-click="authenticateUser">
+          Sign in with Google
+        </paper-button>
+      </no-auth>
+    </iron-pages>
   </template>
   <script src="../securityconfig.js"></script>
   <script src="my-friend-add.js"></script>

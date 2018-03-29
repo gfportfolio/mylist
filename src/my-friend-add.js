@@ -4,7 +4,7 @@ class MyFriendAdd extends Polymer.Element {
   }
 
   static get properties() {
-    return {userId: {type: Number}, route: {type: Object}, routeData: {type: Object, observer: '_routeChanged'}, isActive: {type: Boolean, observer: '_activeChanged'}, listId: {type: String}, contacts: {type: [Object]}};
+    return {userId: {type: Number}, route: {type: Object}, routeData: {type: Object, observer: '_routeChanged'}, isActive: {type: Boolean, observer: '_activeChanged'}, listId: {type: String}, page: {type: String}, contacts: {type: [Object]}};
   }
 
   submitClick() {
@@ -54,19 +54,11 @@ class MyFriendAdd extends Polymer.Element {
     let self = this;
     let googleUser = gapi.auth2.getAuthInstance().currentUser.get();
     let isSignedIn = gapi.auth2.getAuthInstance().isSignedIn.get();
-    if (!isSignedIn) {
-      try {
-        let provider = new firebase.auth.GoogleAuthProvider();
-        provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
-        await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
-        let result = await firebase.auth().signInWithPopup(provider);
-        this.user = result.user;
-        this.isAuthenticated = true;
-        gapi.client.setToken({access_token: result.credential.accessToken});
-      } catch (error) {
-        console.log(error);
-      }
+    if (gapi.client.getToken() === null) {
+      this.page = 'no-auth';
+      return;
     }
+    this.page = 'friends';
     this.contacts = new Array();
     gapi.client.people.people.connections
         .list({
@@ -99,6 +91,22 @@ class MyFriendAdd extends Polymer.Element {
     let firebaseUser = firebase.auth().currentUser;
     let firebaseData = {name: firebaseUser.displayName, emailAddress: firebaseUser.email, photoUrl: firebaseUser.photoURL};
     firebase.firestore().collection('users').doc(user.emailAddress).collection('requests').doc(firebaseData.emailAddress).set(firebaseData);
+  }
+
+  async authenticateUser() {
+    let provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+
+    try {
+      await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      let result = await firebase.auth().signInWithPopup(provider);
+      this.user = result.user;
+      this.isAuthenticated = true;
+      gapi.client.setToken({access_token: result.credential.accessToken});
+      this._googleApiStart();
+    } catch (error) {
+      console.log(`signin error ${error} `)
+    }
   }
 }
 window.customElements.define(MyFriendAdd.is, MyFriendAdd);
