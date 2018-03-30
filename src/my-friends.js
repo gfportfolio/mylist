@@ -115,7 +115,7 @@ class MyFriends extends Polymer.Element {
 
   fabClick() {
     console.log('fab');
-    this.set('route.path', 'friends-add/');
+    this.set('route.path', 'friend-add');
   }
 }
 
