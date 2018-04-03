@@ -19,7 +19,7 @@ class MyLists extends Polymer.Element {
             notify: true,
             observer: '_selectedItemsChanged',
           },
-          isActive: {type: Boolean}
+          isActive: {type: Boolean}, viewingEmail: {type: String, observer: '_viewingEmailChanged'}, isViewingFriends: {type: Boolean}
     }
   }
   ready() {
@@ -33,6 +33,10 @@ class MyLists extends Polymer.Element {
     if (this.selectedItems) {
       this.dispatchEvent(new CustomEvent('itemsSelected', {detail: this.selectedItems, bubbles: true, composed: true}));
     }
+  }
+
+  _viewingEmailChanged() {
+    loadUsersLists();
   }
 
   editItem() {
@@ -71,6 +75,12 @@ class MyLists extends Polymer.Element {
   loadUsersLists() {
     let self = this;
     self.lists = [];
+    let userEmail = firebase.auth().currentUser.email;
+    this.isViewingFriends = false;
+    if (this.viewingEmail !== null && this.viewingEmail !== '') {
+      userEmail = this.viewingEmail;
+      this.isViewingFriends = true;
+    }
     firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('lists').onSnapshot(function(recievedData) {
       let recievedLists = [];
       recievedData.docs.forEach(function(doc) {

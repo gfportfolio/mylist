@@ -11,7 +11,7 @@ class MyFriends extends Polymer.Element {
           routeData: {
             type: Object,
           },
-          friends: {type: [Object]}, viewers: {type: [Object]}, requests: {type: [Object]}, isActive: {type: Boolean}
+          viewingEmail: {type: String, notify: true}, friends: {type: [Object]}, viewers: {type: [Object]}, requests: {type: [Object]}, isActive: {type: Boolean}
     }
   }
   ready() {
@@ -65,7 +65,10 @@ class MyFriends extends Polymer.Element {
     });
   }
 
-  _viewFriendsList() {
+  _viewFriendsList(e) {
+    let user = e.currentTarget.dataArgs;
+    this.set('viewingEmail', user.emailAddress);
+    this.set('route.path', 'lists');
   }
 
   async _stopSeeingFriendsLists(e) {

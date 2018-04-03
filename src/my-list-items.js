@@ -11,7 +11,7 @@ class MyListItems extends Polymer.Element {
           routeData: {
             type: Object,
           },
-          listId: {type: String}, items: {type: Object}, selectedItems: {type: Array, notify: true, observer: '_selectedItemsChanged'}, isActive: {type: Boolean}
+          viewingEmail: {type: String}, listId: {type: String}, items: {type: Object}, selectedItems: {type: Array, notify: true, observer: '_selectedItemsChanged'}, isActive: {type: Boolean}
     }
   }
   static get observers() {
