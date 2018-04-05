@@ -19,9 +19,10 @@ class MyLists extends Polymer.Element {
             notify: true,
             observer: '_selectedItemsChanged',
           },
-          isActive: {type: Boolean}, viewingEmail: {type: String, observer: '_viewingEmailChanged'}, isViewingFriends: {type: Boolean}
+          isActive: {type: Boolean}, currentViewingEmail: {type: String}, viewingEmail: {type: String, observer: '_viewingEmailChanged'}, isViewingFriends: {type: Boolean}
     }
   }
+
   ready() {
     super.ready();
   }
@@ -36,7 +37,7 @@ class MyLists extends Polymer.Element {
   }
 
   _viewingEmailChanged() {
-    loadUsersLists();
+    this.loadUsersLists();
   }
 
   editItem() {
@@ -51,7 +52,7 @@ class MyLists extends Polymer.Element {
     if (!this.isActive) {
       return;
     }
-    this.selectedItems.forEach(element => {firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('lists').doc(element.id).delete().then(function() {
+    this.selectedItems.forEach(element => {firebase.firestore().collection('users').doc(this.currentViewingEmail).collection('lists').doc(element.id).delete().then(function() {
                                  console.log(`list ${element.id} deleted`);
                                })});
   }
@@ -75,13 +76,13 @@ class MyLists extends Polymer.Element {
   loadUsersLists() {
     let self = this;
     self.lists = [];
-    let userEmail = firebase.auth().currentUser.email;
+    this.currentViewingEmail = firebase.auth().currentUser.email;
     this.isViewingFriends = false;
-    if (this.viewingEmail !== null && this.viewingEmail !== '') {
-      userEmail = this.viewingEmail;
+    if (this.viewingEmail) {
+      this.currentViewingEmail = this.viewingEmail;
       this.isViewingFriends = true;
     }
-    firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('lists').onSnapshot(function(recievedData) {
+    firebase.firestore().collection('users').doc(this.currentViewingEmail).collection('lists').onSnapshot(function(recievedData) {
       let recievedLists = [];
       recievedData.docs.forEach(function(doc) {
         var data = doc.data();

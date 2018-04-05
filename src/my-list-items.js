@@ -11,7 +11,7 @@ class MyListItems extends Polymer.Element {
           routeData: {
             type: Object,
           },
-          viewingEmail: {type: String}, listId: {type: String}, items: {type: Object}, selectedItems: {type: Array, notify: true, observer: '_selectedItemsChanged'}, isActive: {type: Boolean}
+          currentViewingEmail: {type: String}, viewingEmail: {type: String, observer: '_viewingEmailChanged'}, isViewingFriends: {type: Boolean}, listId: {type: String}, items: {type: Object}, selectedItems: {type: Array, notify: true, observer: '_selectedItemsChanged'}, isActive: {type: Boolean}
     }
   }
   static get observers() {
@@ -24,18 +24,18 @@ class MyListItems extends Polymer.Element {
     }
   }
 
-  editItem() {
-    if (!this.isActive) {
-      return;
-    }
-    this.set('route.path', `list-items-add/${this.selectedItems[0].id}`);
-  }
+  // editItem() {
+  //   if (!this.isActive) {
+  //     return;
+  //   }
+  //   this.set('route.path', `list-items-add/${this.selectedItems[0].id}`);
+  // }
 
   deleteItems() {
     if (!this.isActive) {
       return;
     }
-    this.selectedItems.forEach(element => {firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('lists').doc(element.id).delete().then(function() {
+    this.selectedItems.forEach(element => {firebase.firestore().collection('users').doc(this.currentViewingEmail).collection('lists').doc(element.id).delete().then(function() {
                                  console.log(`list ${element.id} deleted`);
                                })});
   }
@@ -51,10 +51,20 @@ class MyListItems extends Polymer.Element {
     }
   }
 
+  _viewingEmailChanged() {
+    this._loadListData(this.listId);
+  }
+
   _loadListData(listId) {
     let self = this;
     this.listId = listId;
-    firebase.firestore().collection('users').doc(firebase.auth().currentUser.email).collection('lists').doc(listId).collection('items').onSnapshot(function(recievedData) {
+    this.currentViewingEmail = firebase.auth().currentUser.email;
+    this.isViewingFriends = false;
+    if (this.viewingEmail) {
+      this.currentViewingEmail = this.viewingEmail;
+      this.isViewingFriends = true;
+    }
+    firebase.firestore().collection('users').doc(this.currentViewingEmail).collection('lists').doc(listId).collection('items').onSnapshot(function(recievedData) {
       let recievedItems = [];
       recievedData.docs.forEach(function(doc) {
         var data = doc.data();

@@ -14,6 +14,7 @@ class MyApp extends Polymer.Element {
         type: Array,
         reflectToAttribute: true,
       },
+      viewingEmail: {type: String, observer: '_viewingEmailChanged'},
       toolbar: {type: String, value: 'main'},
       routeData: Object,
       subroute: String,
@@ -59,6 +60,10 @@ class MyApp extends Polymer.Element {
     return [
       '_routePageChanged(routeData.page)',
     ];
+  }
+
+  _viewingEmailChanged() {
+    console.log(this.viewingEmail);
   }
 
   _itemsSelected(event) {
