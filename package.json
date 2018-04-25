@@ -11,5 +11,10 @@
     "lint:javascript": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "polymer test",
     "test:integration": "polymer build # test that psk builds without error with the CLI"
+  },
+  "dependencies": {
+    "browser-sync": "^2.23.7",
+    "clang-format": "^1.2.3",
+    "gulp": "^3.9.1"
   }
 }
