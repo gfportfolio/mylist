@@ -21,7 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="my-list-items">
   <template>
     <style include="shared-styles">
-       :host {
+      :host {
         display: block;
 
         padding: 10px;
@@ -52,8 +52,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </titanium-letter-selectable-list-item>
       </template>
     </iron-list>
-    <paper-fab icon="my-icons:add" class="add-fab" id="add" on-click="fabClick" title="Add Point"></paper-fab>
-
+    <template is="dom-if" if="[[!isViewingFriends]]">
+      <paper-fab icon="my-icons:add" class="add-fab" id="add" on-click="fabClick" title="Add Point"></paper-fab>
+    </template>
   </template>
   <script src="my-list-items.js"></script>
 </dom-module>

@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "browser-sync": "^2.23.7",
-    "clang-format": "^1.2.3",
+    "clang-format": "1.0.55",
     "gulp": "^3.9.1"
   }
 }
